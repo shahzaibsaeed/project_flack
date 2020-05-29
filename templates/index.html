@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Flack</title>
+  </head>
+  <body>
+
+    <!-- navigation bar -->
+    <nav>
+
+    </nav>
+
+    <div id="main-section">
+
+      <!-- Room Section -->
+      <nav id="sidebar">
+        <h4>Welcome <span id="displayName"></span>
+        </h4>
+      </nav>
+
+      <!-- Message Area -->
+      <div id="rightside-panel">
+
+        <!-- Display Message -->
+        <div id="display-msg-section">
+
+        </div>
+
+        <!-- input message -->
+        <div id="input-area">
+          <input type="text" id="user-msg" placeholder="Type here...">
+          <button type="button" id="send_msg">SEND</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Get username -->
+    <!-- <script type="text/javascript">
+        const username = `{{username}}`;
+    </script> -->
+
+
+    <!-- Custom socketio JS -->
+    <script type="text/javascript" src="{{url_for('static', filename='script/chat.js')}}">
+    </script>
+    <!-- socketio JS -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+  </body>
+</html>
