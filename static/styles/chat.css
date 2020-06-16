@@ -1,0 +1,273 @@
+
+.navbar0 {
+  background-color: #3b1f3d;
+    color: #e5e5e5;
+}
+
+#introNav {
+  color: #e5e5e5;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  font-weight: normal;
+  letter-spacing: 8px;
+}
+
+body {
+  overflow: hidden;; /*Make  this section non-scrolable */
+}
+
+.navbar {
+  padding-bottom: 0px;
+  padding-top: 0px !important;
+  margin-top: 0px;
+  width: 260px;
+  float: left; /* Make this div as wide as its contents */
+  min-height: 87vh;
+  padding-left: 0px;
+  padding-top: 15px;
+  padding-right: 0px;
+  border-right: 0.5px solid #898c91;
+  background-color: #4a234b;
+  color: #e5e5e5;
+}
+
+.navbar .welcomeUser {
+  border-bottom: 0.5px outset;
+  width: 100%;
+}
+
+.navbar #welcomeUser {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 1px;
+}
+
+.navbar .navbar-toggler {
+  bottom: 435px;
+  position: inherit;
+  border-color: #e5e5e5;
+  border-radius: 12px;
+}
+
+.navbar #display-channel-section {
+  height: 392px;
+  position: fixed;
+  width: 235px;
+  left: 15px;
+  overflow-y: auto;
+}
+
+.navbar p:hover {
+    /* background-color: #3b1f3d; */
+    color: #3b1f3d;
+    background-color: #e5e5e5;
+}
+
+.navbar #channel-section{
+  position: relative;
+  bottom: 86px;
+
+}
+
+.navbar button {
+    color: #e5e5e5;
+    margin-bottom: 8px;
+    border-color: #e5e5e5;
+
+}
+
+.navbar button:hover {
+  background-color: #e5e5e5;
+  color: #4a234b;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.navbar button:active {
+  border-color: #4a234b;
+}
+
+.navbar #new-channel {
+  width: 178px;
+  border-radius: 12px;
+  margin-right: 8px;
+  top: 5px;
+  position: relative;
+}
+
+.navbar #send-channel {
+  border-radius: 12px;
+  position: relative;
+  top: 5px;
+}
+
+#display-message-section {
+  margin-top: 4px;
+  min-height: 72vh;
+  max-height: 72vh;
+  overflow-y: auto; /*Make  this section scrolable */
+}
+
+.message-section .currentChannel {
+  border-bottom: 0.5px outset;
+}
+
+.message-section #currentChannel {
+  text-align: center;
+  margin-bottom: 0px;
+  padding: 8px;
+  margin-left: 259px;
+  font-weight: bold;
+}
+
+.message-section #input-area {
+    padding-left: 1em;
+    padding-right: 1em;
+    bottom: 0;
+
+}
+
+.message-section input[type=text]:focus{
+    border-color: #4a234b;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 10px #4a234b;
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.message-section .others-msg {
+    margin-right:50%;
+    margin-left: 1em;
+    /* animation */
+    animation-name: fadeIn;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+.message-section .others-msg p {
+  margin-top: 4px;
+  background-color: #dbdbdb;
+  margin-bottom: 0px;
+  border-radius: 38px;
+  padding: 6px 18px;
+}
+
+.message-section .my-msg {
+  margin-left: 50%;
+  margin-right:1em;
+  /* animation */
+  animation-name: fadeIn;
+  animation-duration: 0.75s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+.message-section .my-msg p {
+  color: #ffff;
+  margin-top: 4px;
+  background-color: #b189b2;
+  margin-bottom: 0px;
+  border-radius: 38px;
+  padding: 4px 12px;
+}
+
+.message-section .system-msg {
+  margin-bottom: 0px;
+  text-align: center;
+  padding: 0.5em;
+  color: #656d78;
+  font-size:0.9em;
+}
+
+.message-section .timestamp {
+    color: #656d78;
+    font-size:0.7em;
+    padding: 8px 12px;
+}
+
+.message-section .other-displayName {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #b189b2;
+}
+
+.message-section .my-displayName {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #FF6B13;
+}
+
+.message-section #user-message {
+  position: relative;
+  margin-left: 256px;
+  top: -42px;
+  margin-right: 8px;
+  border-radius: 12px;
+}
+
+
+.message-section #send-message {
+  border-radius: 12px;
+  background-color: #ffff;
+  color: #4a234b;
+  border-color: #4a234b;
+  top: -42px;
+  position: relative;
+  margin-right: -4px;
+}
+
+.message-section #send-message:hover {
+  background-color: #4a234b;
+  color: #e5e5e5;
+}
+
+.page-footer {
+  background-color: #3b1f3d;
+  color: #e5e5e5;
+  bottom: 47px;
+  position: relative;
+}
+
+.page-footer .footer-copyright {
+  padding: 8px !important;
+}
+
+.page-footer .footer-copyright a{
+  color: #e5e5e5;
+}
+
+
+@media screen and (max-width:670px) {
+  .navbar {
+    width: 200px;
+  }
+
+  .navbar #channel-section {
+    bottom: 38px;
+}
+
+.navbar #display-channel-section {
+  width: 175px;
+}
+
+.navbar #new-channel {
+  top: 86px;
+  width: 123px;
+}
+
+.navbar #send-channel {
+  top: 87px;
+}
+
+.message-section #user-message {
+  margin-left: 196px;
+}
+}
