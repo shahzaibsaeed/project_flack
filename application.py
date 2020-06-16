@@ -24,7 +24,23 @@ oldMessages = {'#general': [{'messages': [],
 
 @app.route('/')
 def index():
-    return render_template('chat.html', channels = CHANNELS, messages = oldMessages['#general'][0])
+    return render_template('chat.html', channels = CHANNELS)
+
+# Displaying Old Channels
+@socketio.on('old msgs')
+def oldMsgs(data):
+    currentChannel = data['currentChannel']
+    displayName = data['displayName']
+    if currentChannel not in oldMessages:
+        channel = currentChannel
+        oldMessages[channel] = [{'messages': [],
+                                'displayName': [],
+                                'timeStamp': []
+                                }]
+    else:
+        socketio.emit('display old msgs', {'messages': oldMessages[currentChannel][0], "currentChannel": currentChannel, "displayName": displayName})
+        print(f"\n\ndisplaying old msgs for channel {currentChannel}\n\n")
+
 
 # New channel
 @socketio.on('new channel')
@@ -82,6 +98,7 @@ def leave(data):
     leave_room(channel)
     socketio.emit('leaveChannelAnnouncement', data, room = channel)
     print(f"\n\nchannel '{channel}' left by {displayName}\n\n")
+
 
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
+                                                /* PROJECT (FLACK) WAS STARTED ON 3rd July, 2020, code written by "Shahzaib Saeed" */
+
 
 .navbar0 {
   background-color: #3b1f3d;
@@ -118,6 +120,7 @@ body {
 }
 
 .message-section #currentChannel {
+  font-style: italic;
   text-align: center;
   margin-bottom: 0px;
   padding: 8px;

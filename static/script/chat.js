@@ -19,6 +19,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // join the a channel when opens the app
   joinChannel(currentChannel);
+  oldMsgs(currentChannel);
+
+
+
+  function oldMsgs(currentChannel) {
+    socket.emit('old msgs', {'currentChannel': currentChannel, 'displayName': localStorage.getItem('displayName')});
+    console.log(`old msgs for channel '${currentChannel}' by '${displayName}'`)
+  }
+
+  socket.on('display old msgs', data => {
+    if (data['currentChannel'] == currentChannel && data['displayName'] == localStorage.getItem('displayName')) {
+
+
+      console.log(data)
+
+      for (var i=0; i < (data['messages']['messages']).length; i++) {
+
+        const p = document.createElement('p');
+        const p_msg = document.createElement('p');
+        const span_timeStamp = document.createElement('span');
+        const span_displayName = document.createElement('span');
+        const br = document.createElement('br');
+        const hr = document.createElement('hr');
+
+        console.log(data['messages']['messages'][i]);
+        console.log(data['messages']['displayName'][i]);
+        // display own message
+        if (data['messages']['displayName'][i] == localStorage.getItem('displayName')){
+          p.setAttribute("class", "my-msg");
+          message = data['messages']['messages'][i]
+          timeStamp = data['messages']['timeStamp'][i]
+          displayName = data['messages']['displayName'][i]
+
+          span_displayName.setAttribute("class", "my-displayName");
+          span_displayName.innerHTML = displayName;
+
+          p_msg.innerHTML = message
+
+          span_timeStamp.setAttribute("class", "timestamp");
+          span_timeStamp.innerHTML = timeStamp;
+
+          p.innerHTML = span_timeStamp.outerHTML + br.outerHTML + p_msg.outerHTML;
+          document.querySelector('#display-message-section').append(p);
+          console.log(`msg ${message} send by ${data['messages']['displayName'][i]}`)
+        } else if (typeof data['messages']['displayName'][i] !== 'undefined') {
+
+          const p = document.createElement('p');
+          const p_msg = document.createElement('p');
+          const span_timeStamp = document.createElement('span');
+          const span_displayName = document.createElement('span');
+          const br = document.createElement('br');
+          const hr = document.createElement('hr');
+
+
+          p.setAttribute("class", "others-msg");
+          message = data['messages']['messages'][i]
+          timeStamp = data['messages']['timeStamp'][i]
+          displayName = data['messages']['displayName'][i]
+
+          span_displayName.setAttribute("class", "other-displayName");
+          span_displayName.innerHTML = displayName;
+
+          p_msg.innerHTML = span_displayName.outerHTML + br.outerHTML + message
+
+          span_timeStamp.setAttribute("class", "timestamp");
+          span_timeStamp.innerHTML = timeStamp;
+
+          p.innerHTML = span_timeStamp.outerHTML + br.outerHTML + p_msg.outerHTML;
+          document.querySelector('#display-message-section').append(p);
+          console.log(`msg ${message} send by ${data['messages']['displayName'][i]}`)
+        }
+      }
+
+      }
+      scrollDownChatWindow();
+  })
+
+
+
+
 
 
   // Add new channel in the channel section
@@ -119,9 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Send new channel to the server
   document.querySelector('#form').onsubmit = () => {
     if (document.querySelector('#new-channel').value) {
-      socket.emit('new channel', {'channel': document.querySelector('#new-channel').value});
+      channel = document.querySelector('#new-channel').value;
+      socket.emit('new channel', {'channel': channel});
       document.querySelector('#new-channel').value = '';
-
+      joinChannel(channel);
     }
   }
 
@@ -132,13 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelector('#currentChannel').innerHTML = p.innerHTML;
       newChannel = p.innerHTML;
       if (newChannel === currentChannel) {
-        msg = `You are already in ${currentChannel} channel.`
+        msg = `You are already in ${currentChannel}.`
         printSysMsg(msg);
       } else {
         leaveChannel(currentChannel);
         joinChannel(newChannel);
+        oldMsgs(newChannel);
         currentChannel = newChannel;
         document.querySelector('#display-message-section').innerHTML = '';
+        document.querySelector('#user-message').focus();
       }
 
     }
