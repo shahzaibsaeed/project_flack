@@ -1,20 +1,6 @@
+                                                // PROJECT (FLACK) WAS STARTED ON 3rd July, 2020, code written by "Shahzaib Saeed"
 
-// Load the DOMs
 document.addEventListener('DOMContentLoaded', () => {
-
-  // connects to the socket
-  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-
-
-  // load the DISPLAY_NAME function to prompt the input field
-  display_name();
-
-  document.querySelector('#displayName').innerHTML = localStorage.getItem('displayName');
-
-  let channel = "General";
-  joinChannel("General");
-
-  // display all incoming mdocument.addEventListener('DOMContentLoaded', () => {
   // Connect to websocket
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
@@ -23,21 +9,24 @@ document.addEventListener('DOMContentLoaded', () => {
   var displayName = localStorage.getItem('displayName');
   document.querySelector('#displayName').innerHTML = displayName;
 
+  if (!localStorage.getItem('currentChannel')) {
+    localStorage.setItem('currentChannel', '#general');
+  }
+
   // Load the channel list
-  let currentChannel = 'general';
+  let currentChannel = localStorage.getItem('currentChannel');
   document.querySelector('#currentChannel').innerHTML = currentChannel;
 
   // join the a channel when opens the app
   joinChannel(currentChannel);
 
 
-    // Add new channel in the channel section
+  // Add new channel in the channel section
   socket.on('add channel', data => {
     if (data) {
       const p = document.createElement('p');
-      p.setAttribute('class','select-channel')
-      // p.classList.add("select-channel");
-      p.innerHTML = "#" + data ;
+      p.className = 'select-channel'
+      p.innerHTML = '#' + data ;
       document.querySelector('#display-channel-section').append(p);
     }
   })
@@ -46,17 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add announcment about joining the new channel
   socket.on('joinChannelAnnouncement', data => {
     const p = document.createElement('p');
+    p.setAttribute("class", "system-msg");
     p.innerHTML = `${data['displayName']} has joined the '${data['channel']}'`
     document.querySelector('#display-message-section').append(p);
-
+    scrollDownChatWindow();
   })
 
   // Add announcment about leaving the new channel
   socket.on('leaveChannelAnnouncement', data => {
     const p = document.createElement('p');
+    p.setAttribute("class", "system-msg");
     p.innerHTML = `${data['displayName']} has left the '${data['channel']}'`
     document.querySelector('#display-message-section').append(p);
-
+    scrollDownChatWindow();
   })
 
   // Add new message in the message section
@@ -65,77 +56,126 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data['message']) {
       // create elements
       const p = document.createElement('p');
+      const p_msg = document.createElement('p');
       const span_timeStamp = document.createElement('span');
       const span_displayName = document.createElement('span');
       const br = document.createElement('br');
       const hr = document.createElement('hr');
+      console.log(`data coming for ${data['displayName']}`)
 
+    // display own message
+    if (data['displayName'] == localStorage.getItem('displayName')){
+      p.setAttribute("class", "my-msg");
       message = data['message']
       timeStamp = data['timeStamp']
       displayName = data['displayName']
 
-    // display own message
-    if (data['displayName'] == displayName){
-      console.log(`${data['displayName']} has sent '${data['message']}' in channel '${data['channel']}'`);
+      span_displayName.setAttribute("class", "my-displayName");
       span_displayName.innerHTML = displayName;
+
+      p_msg.innerHTML = message
+
+      span_timeStamp.setAttribute("class", "timestamp");
       span_timeStamp.innerHTML = timeStamp;
-      p.innerHTML = span_displayName.outerHTML + br.outerHTML + message + br.outerHTML + span_timeStamp.outerHTML + hr.outerHTML;
+
+      p.innerHTML = span_timeStamp.outerHTML + br.outerHTML + p_msg.outerHTML;
       document.querySelector('#display-message-section').append(p);
+      console.log(`msg ${message} send by ${data['displayName']}`)
     } else if (typeof data['displayName'] !== 'undefined') {
+      p.setAttribute("class", "others-msg");
+      message = data['message']
+      timeStamp = data['timeStamp']
+      displayName = data['displayName']
+
+      span_displayName.setAttribute("class", "other-displayName");
       span_displayName.innerHTML = displayName;
+
+      p_msg.innerHTML = span_displayName.outerHTML + br.outerHTML + message
+
+      span_timeStamp.setAttribute("class", "timestamp");
       span_timeStamp.innerHTML = timeStamp;
-      p.innerHTML = span_displayName.outerHTML + br.outerHTML + message + br.outerHTML + span_timeStamp.outerHTML + hr.outerHTML;
+
+      p.innerHTML = span_timeStamp.outerHTML + br.outerHTML + p_msg.outerHTML;
       document.querySelector('#display-message-section').append(p);
+      console.log(`msg ${message} send by ${data['displayName']}`)
     }
     }
+    scrollDownChatWindow();
   })
 
   // Send message
   document.querySelector('#send-message').onclick = () => {
     if (document.querySelector('#user-message').value) {
       socket.emit('incoming msg', {'message': document.querySelector('#user-message').value,
-                                    'displayName': displayName,
+                                    'displayName': localStorage.getItem('displayName'),
                                     'channel': currentChannel
                                   });
-
+      console.log(`msg ${ document.querySelector('#user-message').value}} send by ${localStorage.getItem('displayName')}`)
       document.querySelector('#user-message').value = '';
     }
 
   }
 
     // Send new channel to the server
-  document.querySelector('#send-channel').onclick = () => {
+  document.querySelector('#form').onsubmit = () => {
     if (document.querySelector('#new-channel').value) {
       socket.emit('new channel', {'channel': document.querySelector('#new-channel').value});
       document.querySelector('#new-channel').value = '';
+
     }
   }
+
 
   // channel selection
   document.querySelectorAll('.select-channel').forEach(p => {
     p.onclick = () => {
       document.querySelector('#currentChannel').innerHTML = p.innerHTML;
       newChannel = p.innerHTML;
-      console.log(`current channel is '${newChannel}', user is ${displayName}`);
-      leaveChannel(currentChannel);
-      joinChannel(newChannel);
-      currentChannel = newChannel;
-      document.querySelector('#display-message-section').innerHTML = '';
+      if (newChannel === currentChannel) {
+        msg = `You are already in ${currentChannel} channel.`
+        printSysMsg(msg);
+      } else {
+        leaveChannel(currentChannel);
+        joinChannel(newChannel);
+        currentChannel = newChannel;
+        document.querySelector('#display-message-section').innerHTML = '';
+      }
+
     }
   })
 
   // Join Channel
   function joinChannel(newChannel) {
     socket.emit('join', {'displayName': displayName, 'channel': newChannel});
-    console.log(`channel '${newChannel}' joined by ${displayName}`);
+    localStorage.setItem('currentChannel', newChannel)
+    console.log(`'${newChannel}' channel joined by '${displayName}'`)
   }
 
   // leave Channel
   function leaveChannel(currentChannel) {
     socket.emit('leave', {'displayName': displayName, 'channel': currentChannel});
-    console.log(`channel '${currentChannel}' left by ${displayName}`);
+    console.log(`'${currentChannel}' channel left by '${displayName}'`)
+
   }
 
+
+  // Print system messages
+  function printSysMsg(msg) {
+    const p = document.createElement('p');
+    p.setAttribute("class", "system-msg");
+    p.innerHTML = msg;
+    document.querySelector('#display-message-section').append(p);
+
+    // Autofocus on text box
+    document.querySelector("#user_message").focus();
+    scrollDownChatWindow();
+  }
+
+  // Scroll chat window down
+   function scrollDownChatWindow() {
+       const chatWindow = document.querySelector("#display-message-section");
+       chatWindow.scrollTop = chatWindow.scrollHeight;
+   }
 
 })
 
@@ -150,101 +190,3 @@ function display_name() {
     };
   };
 }
-essages on the client-side
-  socket.on('message', data => {
-
-    // display current messages
-    if (data.message) {
-      // create elements
-      const p = document.createElement('p');
-      const span_displayName = document.createElement('span');
-      const span_timeStamp = document.createElement('span');
-      const br = document.createElement('br');
-
-      // display own message
-      if (data.displayName == localStorage.getItem('displayName')) {
-        // create a displayName span
-        span_displayName.innerHTML = data.displayName;
-        // create a timeStamp span
-        span_timeStamp.innerHTML = data.timeStamp;
-        // create a text paragraph
-        p.innerHTML = span_displayName.outerHTML + br.outerHTML + data.message + br.outerHTML + span_timeStamp.outerHTML;
-
-        // add the text line in Display message section
-        document.querySelector('#display-message-section').append(p);
-      } else if (typeof data.displayName !== 'undefined') {
-        // create a displayName span
-        span_displayName.innerHTML = data.displayName;
-        // create a timeStamp span
-        span_timeStamp.innerHTML = data.timeStamp;
-        // create a text paragraph
-        p.innerHTML = span_displayName.outerHTML + br.outerHTML + data.message + br.outerHTML + span_timeStamp.outerHTML;
-
-        // add the text line in Display message section
-        document.querySelector('#display-message-section').append(p);
-      }
-      else {
-        printSysMsg(data.message);
-      }
-    }
-
-  });
-
-  // sending message to the server
-  document.querySelector('#send-message').onclick = () => {
-    socket.send({"message": document.querySelector('#user-message').value,
-      "displayName" : localStorage.getItem('displayName'),
-      "channel": channel});
-    // clear input field
-    document.querySelector('#user-message').value = '';
-  };
-
-  // channel selection
-  document.querySelectorAll('.select-channel').forEach(p => {
-    p.onclick = () => {
-      let newChannel = p.innerHTML;
-      if (newChannel == channel) {
-        message = `You are already in ${channel} channel.`
-        printSysMsg(message)
-      } else {
-        leaveChannel(channel);
-        joinChannel(newChannel);
-        channel = newChannel;
-      };
-    };
-  });
-
-  // a function to create Prompt for user to enter DISPLAY NAME
-  function display_name() {
-    if (!localStorage.getItem('displayName')) {
-      var displayName = prompt("Please enter your 'Display Name'");
-      if (!displayName) {
-        document.write("try again")
-      } else{
-        localStorage.setItem('displayName', displayName);
-      };
-    };
-  }
-  // leave channel
-  function leaveChannel(channel) {
-    socket.emit('leave', {"displayName": localStorage.getItem('displayName'), "channel": channel});
-    console.log("leave")
-  }
-  // leave channel
-  function joinChannel(channel) {
-    socket.emit('join', {"displayName": localStorage.getItem('displayName'), "channel": channel});
-    // clear message area
-    document.querySelector('#display-message-section').innerHTML = '';
-    // autofocus on text box
-    document.querySelector('#user-message').focus()
-    console.log('join')
-  }
-  // print system message
-  function printSysMsg(message) {
-    const p = document.createElement('p');
-    p.innerHTML = message;
-    document.querySelector('#display-message-section').append(p);
-  }
-
-
-});
