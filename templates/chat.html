@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <title>Flack</title>
   </head>
-  <body>
+  <body id="body">
     <!-- navigation bar -->
     <nav class="navbar0 navbar0-expand-lg navbar0-light">
       <p id="introNav" class="cursor-pointer">Welcome to "FLACK"</p>
@@ -56,9 +56,23 @@
         <div class="currentChannel">
           <p id="currentChannel"></p>
         </div>
+        <div class="typingUsers">
+            <span id="typingUsersText"></span>
+        </div>
         <div id="display-message-section">
         </div>
         <div id="input-area" class="input-group mb-3">
+          <!-- <input type="file" id="files" accept="image/*" / style="    position: relative;bottom: 50px;right: 160px;left: 263px;"> -->
+
+          <!-- <button class="attach-btn form-control btn btn-outline-primary text-center">
+                    <div class="image-upload">
+                        <label for="file-input" style="position: relative;right: 72px;">
+                            <i class="fas fa-paperclip"></i>
+                        </label>
+
+                        <input name="file" id="file-input" type="file" multiple/>
+                    </div>
+                </button> -->
           <input type="text" id="user-message" class="form-control form-control-sm" placeholder="Type here..." autocomplete="off" autofocus>
           <button type="button" id="send-message" class="btn btn-sm"><i class="fas fa-paper-plane"></i></button>
         </div>

@@ -1,5 +1,12 @@
                                                 /* PROJECT (FLACK) WAS STARTED ON 3rd July, 2020, code written by "Shahzaib Saeed" */
 
+.blur {
+  filter: blur(5px);
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+}
 
 .navbar0 {
   background-color: #3b1f3d;
@@ -121,11 +128,23 @@ body {
 
 .message-section #currentChannel {
   font-style: italic;
-  text-align: center;
   margin-bottom: 0px;
   padding: 8px;
-  margin-left: 259px;
+  margin-left: 260px;
   font-weight: bold;
+}
+
+.message-section .typingUsers{
+  margin-top: 8px;
+}
+
+
+.message-section #typingUsersText{
+  margin-top: 12px;
+  padding: 8px;
+  font-weight: normal;
+  font-style: italic;
+  margin-bottom: 0px;
 }
 
 .message-section #input-area {
@@ -247,6 +266,36 @@ body {
   color: #e5e5e5;
 }
 
+.attach-btn {
+  border: none;
+  width: 50px;
+  color: #4a234b;
+  position: relative;
+  bottom: 50px;
+  left: 260px;
+}
+
+.attach-btn:hover {
+  background-color: #FAFBFC;
+  color: #0aceff;
+}
+
+.attach-btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.attach-btn:active {
+  background-color: #FAFBFC !important;
+}
+
+/* .image-upload > input {
+  display: none;
+} */
+
+.image-upload label {
+  cursor: pointer;
+}
 
 @media screen and (max-width:670px) {
   .navbar {
@@ -268,6 +317,10 @@ body {
 
 .navbar #send-channel {
   top: 87px;
+}
+
+.message-section #currentChannel {
+  margin-left: 200px;
 }
 
 .message-section #user-message {

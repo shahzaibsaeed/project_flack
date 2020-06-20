@@ -21,10 +21,36 @@ oldMessages = {'#general': [{'messages': [],
                         }]
                         }
 
+typing_users = {"#general": []}
 
 @app.route('/')
 def index():
     return render_template('chat.html', channels = CHANNELS)
+
+    
+# User Typing
+@socketio.on("type")
+def on_type(data):
+    username = data['username']
+    channel = data['channel']
+    if data['status'] == "end":
+        if data['username'] in typing_users[data['channel']]:
+            typing_users[data['channel']].remove(data['username'])
+
+        message = {"usernames": typing_users[channel], "channel": channel}
+        emit('typing', message, broadcast=True)
+        print(f"\n\nUser not typing\n\n")
+
+    else:
+        if channel not in typing_users:
+            typing_users[channel] = []
+
+        if username not in typing_users[channel]:
+            typing_users[channel].append(username)
+
+        message = {"usernames": typing_users[channel], "channel": channel}
+        emit('typing', message, broadcast=True)
+        print(f"\n\n{username} typing\n\n")
 
 # Displaying Old Channels
 @socketio.on('old msgs')

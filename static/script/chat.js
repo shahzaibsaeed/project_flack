@@ -22,12 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
   oldMsgs(currentChannel);
 
 
-
+  // requesting old messages
   function oldMsgs(currentChannel) {
     socket.emit('old msgs', {'currentChannel': currentChannel, 'displayName': localStorage.getItem('displayName')});
     console.log(`old msgs for channel '${currentChannel}' by '${displayName}'`)
   }
 
+  // display old messages
   socket.on('display old msgs', data => {
     if (data['currentChannel'] == currentChannel && data['displayName'] == localStorage.getItem('displayName')) {
 
@@ -183,6 +184,33 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollDownChatWindow();
   })
 
+
+  // User typing
+  socket.on('typing', data => {
+    if (data['channel'] == localStorage.getItem('currentChannel')) {
+      if (data['usernames'].length == 0 || data['usernames'][0] == localStorage.getItem('displayName') && data['usernames'].length == 1) {
+        $("#typingUsersText").html('');
+        $(".typingUsers").css("display", "none");
+      } else {
+        $("#typingUsersText").html('');
+        data['usernames'].forEach(function (username) {
+          if (username !== localStorage.getItem('displayName')) {
+            $("#typingUsersText").append(`${username}, `);
+          }
+        });
+
+        let temp = $("#typingUsersText").html().slice(0, -2);
+        $("#typingUsersText").html(temp);
+        if (data['usernames'].length == 1 || data['usernames'].length == 2 && data['usernames'].includes(localStorage.getItem('displayName'))) {
+          $("#typingUsersText").append(" is typing...");
+        } else {
+          $("#typingUsersText").append(" are typing...");
+        }
+        $(".typingUsers").css("display", "block");
+      }
+    }
+  });
+
   // Send message
   document.querySelector('#send-message').onclick = () => {
     if (document.querySelector('#user-message').value) {
@@ -260,16 +288,34 @@ document.addEventListener('DOMContentLoaded', () => {
        chatWindow.scrollTop = chatWindow.scrollHeight;
    }
 
-})
+   // Function to display "Display Name"
+   function display_name() {
+     if (!localStorage.getItem('displayName')) {
+       var displayName = prompt("Please enter your 'Display Name'");
+       if (!displayName) {
+         document.write("try again")
+       } else{
+         localStorage.setItem('displayName', displayName);
+       };
+     };
+   }
 
-// Function to display "Display Name"
-function display_name() {
-  if (!localStorage.getItem('displayName')) {
-    var displayName = prompt("Please enter your 'Display Name'");
-    if (!displayName) {
-      document.write("try again")
-    } else{
-      localStorage.setItem('displayName', displayName);
-    };
-  };
-}
+   // #Function to display user typing or not
+   $('#user-message').bind('input propertychange', () => {
+           socket.emit('type', {
+               "status": "start",
+               "channel": localStorage.getItem('currentChannel'),
+               "username": localStorage.getItem('displayName')
+           });
+
+       });
+
+       $("#user-message").blur(function () {
+           socket.emit('type', {
+               "status": "end",
+               "channel": localStorage.getItem('currentChannel'),
+               "username": localStorage.getItem('displayName')
+           });
+       });
+
+})
