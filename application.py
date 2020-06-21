@@ -26,7 +26,6 @@ typing_users = {"#general": []}
 @app.route('/')
 def index():
     return render_template('chat.html', channels = CHANNELS)
-
     
 # User Typing
 @socketio.on("type")

@@ -230,7 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
       channel = document.querySelector('#new-channel').value;
       socket.emit('new channel', {'channel': channel});
       document.querySelector('#new-channel').value = '';
-      joinChannel(channel);
+      channel_x = "#" + channel;
+      joinChannel(channel_x);
     }
   }
 
